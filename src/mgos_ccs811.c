@@ -83,7 +83,7 @@ struct mgos_ccs811 *mgos_ccs811_create(struct mgos_i2c *i2c, uint8_t i2caddr) {
 
   ret = mgos_i2c_read_reg_b(i2c, i2caddr, MGOS_CCS811_REG_HW_ID);
   if (ret != MGOS_CCS811_HW_ID_CODE) {
-    LOG(LL_ERROR, ("Failed to detect CCS811 at I2C 0x%02x", i2caddr));
+    LOG(LL_ERROR, ("Failed to detect CCS811 at I2C 0x%02x (expected: 0x%02x, returned: 0x%02x)", i2caddr,MGOS_CCS811_HW_ID_CODE, ret));
     return NULL;
   }
 
@@ -115,11 +115,11 @@ struct mgos_ccs811 *mgos_ccs811_create(struct mgos_i2c *i2c, uint8_t i2caddr) {
 
   // Set Drive Mode (1s samples)
   uint8_t drive_mode = CCS811_DRIVE_MODE_IDLE;
-  mgos_ccs811_setDriveMode(sensor, CCS811_DRIVE_MODE_1SEC);
+  mgos_ccs811_setDriveMode(sensor, CCS811_DRIVE_MODE_60SEC);
   mgos_usleep(5000);
 
   mgos_ccs811_getDriveMode(sensor, &drive_mode);
-  if (drive_mode != CCS811_DRIVE_MODE_1SEC) {
+  if (drive_mode != CCS811_DRIVE_MODE_60SEC) {
     LOG(LL_ERROR, ("CCS811 failed to set drive mode"));
     goto exit;
   }
